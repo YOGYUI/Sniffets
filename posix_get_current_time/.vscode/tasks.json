@@ -4,7 +4,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "g++ build",
+            "label": "windows-g++-build",
             "type": "shell",
             "command": "g++",
             "args": [
@@ -17,7 +17,7 @@
             "group": "build"
         },
         {
-            "label": "gcc build",
+            "label": "windows-gcc-build",
             "type": "shell",
             "command": "gcc",
             "args": [
@@ -30,12 +30,53 @@
             "group": "build"
         },
         {
-            "label": "execute",
+            "label": "windows-execute",
             "command": "cmd",
             "group": "test",
             "args": [
                 "/C",
                 "${fileDirname}\\main.exe"
+            ]
+        },
+        {
+            "label": "linux-g++-build",
+            "type": "shell",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-g", 
+                "${fileDirname}/main.cpp", 
+                "-o", 
+                "${fileDirname}/main"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            },
+            "problemMatcher": ["$gcc"],
+            "group": "build"
+        },
+        {
+            "label": "linux-gcc-build",
+            "type": "shell",
+            "command": "/usr/bin/gcc",
+            "args": [
+                "-g", 
+                "${fileDirname}/main.cpp", 
+                "-o", 
+                "${fileDirname}/main"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            },
+            "problemMatcher": ["$gcc"],
+            "group": "build"
+        },
+        {
+            "label": "linux-execute",
+            "command": "bash",
+            "group": "test",
+            "args": [
+                "/C",
+                "${fileDirname}/main"
             ]
         }
     ]
