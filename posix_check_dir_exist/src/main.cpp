@@ -4,7 +4,7 @@
 
 bool check_dir_exist(const char *path) {
     bool exist = false;
-    struct stat st{};
+    struct stat st;
     if(stat(path, &st) == 0) {
         if( ((st.st_mode) & S_IFMT) == S_IFDIR ) {
             exist = true;
