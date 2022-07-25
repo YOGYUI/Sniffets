@@ -16,7 +16,7 @@
             "intelliSenseMode": "windows-gcc-x64"
         },
         {
-            "name": "ubuntu-g++",
+            "name": "ubuntu-g++-x64",
             "includePath": [
                 "${workspaceFolder}/**"
             ],
