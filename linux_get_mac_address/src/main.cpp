@@ -4,34 +4,36 @@
 #include <streambuf>
 #include <iostream>
 
-#define MAC_ADDR_SIZE   6
-#define MAC_ADDR_STRING_SIZE   (MAC_ADDR_SIZE * 3 - 1)
+#define MAC_ADDR_LEN 6
 
-std::string get_mac_address(const std::string& if_name)
-{
+bool get_mac_address(const std::string& if_name, uint8_t *mac_addr_buf) {
     std::string mac_addr;
     std::ifstream iface("/sys/class/net/" + if_name + "/address");
     std::string str((std::istreambuf_iterator<char>(iface)), std::istreambuf_iterator<char>());
     if (str.length() > 0) {
-        uint8_t buf[MAC_ADDR_SIZE] = {0, };
         std::string hex = regex_replace(str, std::regex(":"), "");
         uint64_t result = stoull(hex, 0, 16);
-        for (int i = 0; i < MAC_ADDR_SIZE; i++) {
-            buf[MAC_ADDR_SIZE - 1 - i] = (uint8_t) ((result & ((uint64_t) 0xFF << (i * 8))) >> (i * 8));
+        for (int i = 0; i < MAC_ADDR_LEN; i++) {
+            mac_addr_buf[i] = (uint8_t) ((result & ((uint64_t) 0xFF << (i * 8))) >> (i * 8));
         }
-        char temp[MAC_ADDR_STRING_SIZE + 1] = {0,};
-        snprintf(temp, MAC_ADDR_STRING_SIZE, "%02X:%02X:%02X:%02X:%02X:%02X", buf[0], buf[1], buf[2], buf[3], buf[4], buf[5]);
-        temp[MAC_ADDR_STRING_SIZE] = '\0';
-        mac_addr = std::string(temp);
+
+        return true;
     }
 
-    return mac_addr;
+    return false;
 }
 
 int main(int argc, char *argv[]) {
     if (argv[1]) {
-        std::cout << "interface name: " << argv[1] << "\n";
-        std::cout << get_mac_address(std::string(argv[1])) << "\n";
+        std::cout << "Interface Name: " << argv[1] << "\n";
+        uint8_t mac_addr[MAC_ADDR_LEN];
+        if (get_mac_address(std::string(argv[1]), mac_addr)) {
+            char temp[MAC_ADDR_LEN * 3 + 1] = {0,};
+            snprintf(temp, MAC_ADDR_LEN * 3, "%02X:%02X:%02X:%02X:%02X:%02X", 
+                mac_addr[5], mac_addr[4], mac_addr[3], mac_addr[2], mac_addr[1], mac_addr[0]);
+
+            std::cout << "MAC Address: " << std::string(temp) << "\n";
+        }
     }
 
     return 0;
